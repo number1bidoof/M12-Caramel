@@ -5,42 +5,88 @@
       Chapter case   
 
       Custom Objects Used in Poker Games
-      Author: 
-      Date:       
+      Author: Ayah Abdalla
+      Date: 04/25/2025    
 
       Filename:       objects.js
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      let pokerGame = {
+         currentBank: null,
+         currentBet: null,
+         placeBet: function() {
+            this.currentBank -= this.currentBet;
+            return this.currentBank;
+         },
+         payBet: function(type) {
+            let pay = 0;
+            switch(type) {
+               case "Royal Flush": pay = 250; break;
+               case "Straight Flush": pay = 50; break;
+               case "Four of a Kind": pay = 25; break;
+               case "Full House": pay = 9; break;
+               case "Flush": pay = 6; break;
+               case "Straight": pay = 4; break;
+               case "Three of a Kind": pay = 3; break;
+               case "Two Pair": pay = 2; break;
+               case "Jacks or Better": pay = 1; break;
+            }
+            this.currentBank += pay*this.currentBet;
+            return this.currentBet
+         }
+      };
+      
+      //Constructor Function for poker cards
+      function pokerCard(cardSuit, cardRank) {
+         this.suit = cardSuit;
+         this.rank = cardRank;
+      }
+      
+      //Method to reference the image source file for a card
+      pokerCard.prototype.cardImage = function() {
+         return this.rank + "_" + this.suit + ".png";
+      };
+      
+      // Constructor Function for poker decks
+      function pokerDeck() {
+         //List card suits and ranks
+         let suits = ["clubs","diamonds","hearts","spades"];
+         let ranks = ["2","3","4","5","6","7","8","9","10",
+                      "jack","queen","king","ace"];
+         this.cards = []
+      
+         //Add a card for each combo of suit and rank
+         for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 13; j++) {
+               //Add a pokercard object
+               this.cards.push(new pokerCard(suits[i], ranks[j]));
+            }
+         }
+         
+         //Method to randomly sort the cards in the deck
+         this.shuffle = function() {
+            this.cards.sort(function() {
+               return 0.5 - Math.random();
+            });
+         };
+      
+         //Method to deal cards from the deck into a hand
+      
+         this.dealTo = function(pokerHand) {
+            let cardsDealt = pokerHand.cards.length;
+            pokerHand.cards = this.cards.splice(0, cardsDealt);
+         }
+      };
+      
+      //Constructor function for poker hands
+      function pokerHand(handLength) {
+         this.cards = new Array(handLength);
+      }
+      
+      //Method to replace a card in a hand with a card from the deck
+      pokerHand.prototype.replaceCard = function(index, pokerDeck) {
+         this.cards[index] = pokerDeck.cards.shift();
+      };
    
    /* ------------------------------------------------+
    | The handType() function returns a text string of |
